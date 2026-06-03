@@ -54,6 +54,20 @@ function App() {
     await loadTasks();
   }
 
+  async function updateTaskStatus(taskId, status) {
+    await fetch(`${API_URL}/${taskId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        status,
+      }),
+    });
+
+    await loadTasks();
+  }
+
   useEffect(() => {
     loadTasks();
   }, []);
@@ -140,6 +154,23 @@ function App() {
                             {task.description}
                           </p>
                         )}
+
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {columns
+                            .filter((targetColumn) => targetColumn.status !== task.status)
+                            .map((targetColumn) => (
+                              <button
+                                key={targetColumn.status}
+                                type="button"
+                                onClick={() =>
+                                  updateTaskStatus(task.id, targetColumn.status)
+                                }
+                                className="rounded-md border border-slate-700 px-2 py-1 text-xs text-slate-300 hover:border-cyan-400 hover:text-cyan-300"
+                              >
+                                Mover para {targetColumn.title}
+                              </button>
+                            ))}
+                        </div>
                       </div>
                     ))
                   )}
