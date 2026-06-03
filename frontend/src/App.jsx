@@ -19,12 +19,39 @@ const columns = [
 
 function App() {
   const [tasks, setTasks] = useState([]);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
   async function loadTasks() {
     const response = await fetch(API_URL);
     const data = await response.json();
 
     setTasks(data);
+  }
+
+  async function createTask(event) {
+    event.preventDefault();
+
+    if (!title.trim()) {
+      return;
+    }
+
+    await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        description,
+        status: "TODO",
+      }),
+    });
+
+    setTitle("");
+    setDescription("");
+
+    await loadTasks();
   }
 
   useEffect(() => {
@@ -43,6 +70,40 @@ function App() {
         <p className="mt-4 max-w-2xl text-slate-300">
           Kanban integrado com backend, Prisma e banco SQLite.
         </p>
+
+        <form
+          onSubmit={createTask}
+          className="mt-8 rounded-lg border border-slate-800 bg-slate-900 p-4"
+        >
+          <h2 className="text-lg font-semibold text-slate-100">
+            Criar nova tarefa
+          </h2>
+
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <input
+              type="text"
+              placeholder="Título da tarefa"
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+              className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus:border-cyan-400"
+            />
+
+            <input
+              type="text"
+              placeholder="Descrição da tarefa"
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+              className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus:border-cyan-400"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="mt-4 rounded-md bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-cyan-300"
+          >
+            Criar tarefa
+          </button>
+        </form>
 
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           {columns.map((column) => {
