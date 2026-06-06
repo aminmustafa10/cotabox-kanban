@@ -68,6 +68,14 @@ function App() {
     await loadTasks();
   }
 
+  async function deleteTask(taskId) {
+    await fetch(`${API_URL}/${taskId}`, {
+      method: "DELETE",
+    });
+
+    await loadTasks();
+  }
+
   useEffect(() => {
     loadTasks();
   }, []);
@@ -157,7 +165,10 @@ function App() {
 
                         <div className="mt-4 flex flex-wrap gap-2">
                           {columns
-                            .filter((targetColumn) => targetColumn.status !== task.status)
+                            .filter(
+                              (targetColumn) =>
+                                targetColumn.status !== task.status
+                            )
                             .map((targetColumn) => (
                               <button
                                 key={targetColumn.status}
@@ -170,6 +181,14 @@ function App() {
                                 Mover para {targetColumn.title}
                               </button>
                             ))}
+
+                          <button
+                            type="button"
+                            onClick={() => deleteTask(task.id)}
+                            className="rounded-md border border-red-900 px-2 py-1 text-xs text-red-300 hover:border-red-400 hover:text-red-200"
+                          >
+                            Excluir
+                          </button>
                         </div>
                       </div>
                     ))
