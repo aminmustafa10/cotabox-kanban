@@ -4,15 +4,15 @@ const API_URL = "http://127.0.0.1:3333/tasks";
 
 const columns = [
   {
-    title: "TODO",
+    title: "A fazer",
     status: "TODO",
   },
   {
-    title: "IN_PROGRESS",
+    title: "Em progresso",
     status: "IN_PROGRESS",
   },
   {
-    title: "DONE",
+    title: "Concluído",
     status: "DONE",
   },
 ];
@@ -82,32 +82,46 @@ function App() {
 
   return (
     <main className="min-h-screen bg-slate-950 px-6 py-10 text-slate-100">
-      <section className="mx-auto max-w-5xl">
-        <p className="text-sm font-medium uppercase tracking-wide text-cyan-300">
-          Cotabox Challenge
-        </p>
+      <section className="mx-auto max-w-6xl">
+        <div className="flex flex-col gap-2">
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-300">
+            Cotabox Challenge
+          </p>
 
-        <h1 className="mt-3 text-4xl font-bold">Mini Kanban</h1>
+          <h1 className="text-4xl font-bold tracking-tight">Mini Kanban</h1>
 
-        <p className="mt-4 max-w-2xl text-slate-300">
-          Kanban integrado com backend, Prisma e banco SQLite.
-        </p>
+          <p className="max-w-2xl text-slate-300">
+            Kanban integrado com React, backend Express, Prisma e banco SQLite.
+          </p>
+        </div>
 
         <form
           onSubmit={createTask}
-          className="mt-8 rounded-lg border border-slate-800 bg-slate-900 p-4"
+          className="mt-8 rounded-2xl border border-slate-800 bg-slate-900/80 p-5 shadow-xl shadow-black/20"
         >
-          <h2 className="text-lg font-semibold text-slate-100">
-            Criar nova tarefa
-          </h2>
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h2 className="text-lg font-semibold text-slate-100">
+                Criar nova tarefa
+              </h2>
 
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
+              <p className="mt-1 text-sm text-slate-400">
+                Adicione uma tarefa nova diretamente no quadro.
+              </p>
+            </div>
+
+            <span className="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-xs font-medium text-cyan-300">
+              {tasks.length} tarefa(s)
+            </span>
+          </div>
+
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
             <input
               type="text"
               placeholder="Título da tarefa"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
-              className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus:border-cyan-400"
+              className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus:border-cyan-400"
             />
 
             <input
@@ -115,19 +129,19 @@ function App() {
               placeholder="Descrição da tarefa"
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus:border-cyan-400"
+              className="rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-slate-500 focus:border-cyan-400"
             />
           </div>
 
           <button
             type="submit"
-            className="mt-4 rounded-md bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-cyan-300"
+            className="mt-4 rounded-xl bg-cyan-400 px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-300"
           >
             Criar tarefa
           </button>
         </form>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
+        <div className="mt-8 grid gap-5 md:grid-cols-3">
           {columns.map((column) => {
             const columnTasks = tasks.filter(
               (task) => task.status === column.status
@@ -136,32 +150,44 @@ function App() {
             return (
               <div
                 key={column.status}
-                className="rounded-lg border border-slate-800 bg-slate-900 p-4"
+                className="min-h-80 rounded-2xl border border-slate-800 bg-slate-900/70 p-4"
               >
-                <h2 className="text-sm font-semibold text-slate-200">
-                  {column.title}
-                </h2>
+                <div className="flex items-center justify-between">
+                  <h2 className="text-sm font-bold uppercase tracking-wide text-slate-200">
+                    {column.title}
+                  </h2>
+
+                  <span className="rounded-full bg-slate-800 px-2 py-1 text-xs font-semibold text-slate-300">
+                    {columnTasks.length}
+                  </span>
+                </div>
 
                 <div className="mt-4 space-y-3">
                   {columnTasks.length === 0 ? (
-                    <p className="text-sm text-slate-500">
-                      Nenhuma tarefa nesta coluna.
-                    </p>
+                    <div className="rounded-xl border border-dashed border-slate-700 p-4">
+                      <p className="text-sm text-slate-500">
+                        Nenhuma tarefa nesta coluna.
+                      </p>
+                    </div>
                   ) : (
                     columnTasks.map((task) => (
                       <div
                         key={task.id}
-                        className="rounded-md border border-slate-700 bg-slate-950 p-3"
+                        className="rounded-xl border border-slate-700 bg-slate-950 p-4 shadow-lg shadow-black/10"
                       >
-                        <h3 className="font-medium text-slate-100">
-                          {task.title}
-                        </h3>
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <h3 className="font-semibold text-slate-100">
+                              {task.title}
+                            </h3>
 
-                        {task.description && (
-                          <p className="mt-2 text-sm text-slate-400">
-                            {task.description}
-                          </p>
-                        )}
+                            {task.description && (
+                              <p className="mt-2 text-sm leading-relaxed text-slate-400">
+                                {task.description}
+                              </p>
+                            )}
+                          </div>
+                        </div>
 
                         <div className="mt-4 flex flex-wrap gap-2">
                           {columns
@@ -176,7 +202,7 @@ function App() {
                                 onClick={() =>
                                   updateTaskStatus(task.id, targetColumn.status)
                                 }
-                                className="rounded-md border border-slate-700 px-2 py-1 text-xs text-slate-300 hover:border-cyan-400 hover:text-cyan-300"
+                                className="rounded-lg border border-slate-700 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-cyan-400 hover:text-cyan-300"
                               >
                                 Mover para {targetColumn.title}
                               </button>
@@ -185,7 +211,7 @@ function App() {
                           <button
                             type="button"
                             onClick={() => deleteTask(task.id)}
-                            className="rounded-md border border-red-900 px-2 py-1 text-xs text-red-300 hover:border-red-400 hover:text-red-200"
+                            className="rounded-lg border border-red-900 px-3 py-1.5 text-xs font-medium text-red-300 transition hover:border-red-400 hover:text-red-200"
                           >
                             Excluir
                           </button>
