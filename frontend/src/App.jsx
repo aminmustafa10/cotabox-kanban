@@ -22,6 +22,10 @@ function App() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [editingTitle, setEditingTitle] = useState("");
+  const [editingDescription, setEditingDescription] = useState("");
+
   async function loadTasks() {
     const response = await fetch(API_URL);
     const data = await response.json();
@@ -68,12 +72,47 @@ function App() {
     await loadTasks();
   }
 
+  async function updateTaskContent(taskId) {
+    if (!editingTitle.trim()) {
+      return;
+    }
+
+    await fetch(`${API_URL}/${taskId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: editingTitle,
+        description: editingDescription,
+      }),
+    });
+
+    setEditingTaskId(null);
+    setEditingTitle("");
+    setEditingDescription("");
+
+    await loadTasks();
+  }
+
   async function deleteTask(taskId) {
     await fetch(`${API_URL}/${taskId}`, {
       method: "DELETE",
     });
 
     await loadTasks();
+  }
+
+  function startEditing(task) {
+    setEditingTaskId(task.id);
+    setEditingTitle(task.title);
+    setEditingDescription(task.description || "");
+  }
+
+  function cancelEditing() {
+    setEditingTaskId(null);
+    setEditingTitle("");
+    setEditingDescription("");
   }
 
   useEffect(() => {
@@ -170,54 +209,109 @@ function App() {
                       </p>
                     </div>
                   ) : (
-                    columnTasks.map((task) => (
-                      <div
-                        key={task.id}
-                        className="rounded-xl border border-slate-700 bg-slate-950 p-4 shadow-lg shadow-black/10"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <h3 className="font-semibold text-slate-100">
-                              {task.title}
-                            </h3>
+                    columnTasks.map((task) => {
+                      const isEditing = editingTaskId === task.id;
 
-                            {task.description && (
-                              <p className="mt-2 text-sm leading-relaxed text-slate-400">
-                                {task.description}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          {columns
-                            .filter(
-                              (targetColumn) =>
-                                targetColumn.status !== task.status
-                            )
-                            .map((targetColumn) => (
-                              <button
-                                key={targetColumn.status}
-                                type="button"
-                                onClick={() =>
-                                  updateTaskStatus(task.id, targetColumn.status)
+                      return (
+                        <div
+                          key={task.id}
+                          className="rounded-xl border border-slate-700 bg-slate-950 p-4 shadow-lg shadow-black/10"
+                        >
+                          {isEditing ? (
+                            <div className="space-y-3">
+                              <input
+                                type="text"
+                                value={editingTitle}
+                                onChange={(event) =>
+                                  setEditingTitle(event.target.value)
                                 }
-                                className="rounded-lg border border-slate-700 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-cyan-400 hover:text-cyan-300"
-                              >
-                                Mover para {targetColumn.title}
-                              </button>
-                            ))}
+                                className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none focus:border-cyan-400"
+                              />
 
-                          <button
-                            type="button"
-                            onClick={() => deleteTask(task.id)}
-                            className="rounded-lg border border-red-900 px-3 py-1.5 text-xs font-medium text-red-300 transition hover:border-red-400 hover:text-red-200"
-                          >
-                            Excluir
-                          </button>
+                              <input
+                                type="text"
+                                value={editingDescription}
+                                onChange={(event) =>
+                                  setEditingDescription(event.target.value)
+                                }
+                                className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none focus:border-cyan-400"
+                              />
+
+                              <div className="flex flex-wrap gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => updateTaskContent(task.id)}
+                                  className="rounded-lg bg-cyan-400 px-3 py-1.5 text-xs font-bold text-slate-950 transition hover:bg-cyan-300"
+                                >
+                                  Salvar
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={cancelEditing}
+                                  className="rounded-lg border border-slate-700 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-slate-400"
+                                >
+                                  Cancelar
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <>
+                              <div>
+                                <h3 className="font-semibold text-slate-100">
+                                  {task.title}
+                                </h3>
+
+                                {task.description && (
+                                  <p className="mt-2 text-sm leading-relaxed text-slate-400">
+                                    {task.description}
+                                  </p>
+                                )}
+                              </div>
+
+                              <div className="mt-4 flex flex-wrap gap-2">
+                                {columns
+                                  .filter(
+                                    (targetColumn) =>
+                                      targetColumn.status !== task.status
+                                  )
+                                  .map((targetColumn) => (
+                                    <button
+                                      key={targetColumn.status}
+                                      type="button"
+                                      onClick={() =>
+                                        updateTaskStatus(
+                                          task.id,
+                                          targetColumn.status
+                                        )
+                                      }
+                                      className="rounded-lg border border-slate-700 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-cyan-400 hover:text-cyan-300"
+                                    >
+                                      Mover para {targetColumn.title}
+                                    </button>
+                                  ))}
+
+                                <button
+                                  type="button"
+                                  onClick={() => startEditing(task)}
+                                  className="rounded-lg border border-yellow-700 px-3 py-1.5 text-xs font-medium text-yellow-300 transition hover:border-yellow-400 hover:text-yellow-200"
+                                >
+                                  Editar
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => deleteTask(task.id)}
+                                  className="rounded-lg border border-red-900 px-3 py-1.5 text-xs font-medium text-red-300 transition hover:border-red-400 hover:text-red-200"
+                                >
+                                  Excluir
+                                </button>
+                              </div>
+                            </>
+                          )}
                         </div>
-                      </div>
-                    ))
+                      );
+                    })
                   )}
                 </div>
               </div>
