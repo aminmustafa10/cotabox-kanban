@@ -63,7 +63,7 @@ cotabox-kanban/
 ### 1. Clonar o repositório
 
 ```bash
-git clone URL_DO_REPOSITORIO
+git clone https://github.com/aminmustafa10/cotabox-kanban.git
 cd cotabox-kanban
 ```
 
@@ -80,6 +80,24 @@ Instale as dependências:
 ```bash
 npm install
 ```
+
+Configure as variáveis de ambiente:
+
+Dentro da pasta `backend`, existe um arquivo `.env.example` com o modelo das variáveis necessárias para rodar o projeto.
+
+Crie uma cópia desse arquivo com o nome `.env`:
+
+```bash
+cp .env.example .env
+```
+
+O arquivo `.env` deve conter:
+
+```env
+DATABASE_URL="file:./dev.db"
+```
+
+Essa variável é usada pelo Prisma para conectar a aplicação ao banco SQLite local.
 
 Rode as migrations do Prisma:
 
