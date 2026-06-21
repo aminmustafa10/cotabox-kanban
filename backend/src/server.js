@@ -12,8 +12,7 @@ const prisma = new PrismaClient({
   adapter,
 });
 
-const port = process.env.PORT || 3333;
-const host = process.env.HOST || "127.0.0.1";
+const PORT = process.env.PORT || 3333;
 
 app.use(cors());
 app.use(express.json());
@@ -109,6 +108,6 @@ app.delete("/tasks/:id", async (request, response) => {
   }
 });
 
-app.listen(port, host, () => {
-  console.log(`Backend running on http://${host}:${port}`);
+app.listen(PORT, () => {
+  console.log(`Backend running on port ${PORT}`);
 });
