@@ -130,7 +130,7 @@ function App() {
           <h1 className="text-4xl font-bold tracking-tight">Mini Kanban</h1>
 
           <p className="max-w-2xl text-slate-300">
-            Kanban integrado com React, backend Express, Prisma e banco SQLite.
+Kanban integrado com React, backend Express, Prisma e PostgreSQL.
           </p>
         </div>
 

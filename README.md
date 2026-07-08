@@ -1,6 +1,6 @@
 # Mini Kanban - Cotabox Challenge
 
-Projeto de um Mini Kanban desenvolvido como desafio técnico, com frontend em React, backend em Express, banco de dados SQLite e Prisma ORM.
+Projeto de um Mini Kanban desenvolvido como desafio técnico, com frontend em React, backend em Express, banco de dados PostgreSQL no Neon e Prisma ORM.
 
 O sistema permite criar, listar, editar, mover e excluir tarefas entre colunas de um quadro Kanban.
 
@@ -14,7 +14,7 @@ O sistema permite criar, listar, editar, mover e excluir tarefas entre colunas d
   - Em progresso
   - Concluído
 - Excluir tarefas
-- Persistência de dados com SQLite
+- Persistência de dados com PostgreSQL
 - Integração entre frontend e backend via API REST
 
 ## Tecnologias utilizadas
@@ -31,7 +31,8 @@ O sistema permite criar, listar, editar, mover e excluir tarefas entre colunas d
 - Node.js
 - Express
 - Prisma ORM
-- SQLite
+- PostgreSQL
+- Neon
 - CORS
 
 ## Estrutura do projeto
@@ -94,10 +95,10 @@ cp .env.example .env
 O arquivo `.env` deve conter:
 
 ```env
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="postgresql://USER:PASSWORD@HOST/DATABASE?sslmode=require"
 ```
 
-Essa variável é usada pelo Prisma para conectar a aplicação ao banco SQLite local.
+Essa variável é usada pelo Prisma para conectar a aplicação ao banco PostgreSQL hospedado no Neon.
 
 Rode as migrations do Prisma:
 
@@ -209,7 +210,7 @@ DONE = Concluído
 
 ## Banco de dados
 
-O projeto usa SQLite como banco local e Prisma como ORM.
+O projeto usa PostgreSQL como banco de dados online, hospedado no Neon, e Prisma como ORM.
 
 O modelo principal é:
 
