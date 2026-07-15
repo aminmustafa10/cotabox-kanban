@@ -4,6 +4,12 @@ Projeto de um Mini Kanban desenvolvido como desafio técnico, com frontend em Re
 
 O sistema permite criar, listar, editar, mover e excluir tarefas entre colunas de um quadro Kanban.
 
+## Projeto online
+
+Frontend: https://cotabox-kanban.vercel.app  
+API: https://cotabox-kanban-backend.onrender.com/tasks  
+Health check: https://cotabox-kanban-backend.onrender.com/health
+
 ## Funcionalidades
 
 - Criar novas tarefas
@@ -32,8 +38,13 @@ O sistema permite criar, listar, editar, mover e excluir tarefas entre colunas d
 - Express
 - Prisma ORM
 - PostgreSQL
-- Neon
 - CORS
+
+### Deploy e banco de dados
+
+- Vercel
+- Render
+- Neon PostgreSQL
 
 ## Estrutura do projeto
 
@@ -45,8 +56,8 @@ cotabox-kanban/
 │   │   └── migrations/
 │   ├── src/
 │   │   └── server.js
-│   ├── package.json
-│   └── dev.db
+│   ├── .env.example
+│   └── package.json
 │
 ├── frontend/
 │   ├── src/
@@ -210,7 +221,7 @@ DONE = Concluído
 
 ## Banco de dados
 
-O projeto usa PostgreSQL como banco de dados online, hospedado no Neon, e Prisma como ORM.
+O projeto utiliza PostgreSQL hospedado no Neon, com Prisma ORM para modelagem, migrations e acesso ao banco de dados.
 
 O modelo principal é:
 
